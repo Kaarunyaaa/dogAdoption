@@ -1,0 +1,91 @@
+{% extends 'mainBase.html' %}
+{% load static %}
+
+{% block title %}View{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .dog-btn {
+        background: linear-gradient(45deg, #ff914d, #ff5e62); /* Warm gradient */
+        color: white;
+        font-size: 16px; /* Smaller text */
+        font-weight: bold;
+        padding: 10px 18px; /* Compact size */
+        border: none;
+        border-radius: 30px; /* Softer rounded shape */
+        cursor: pointer;
+        transition: 0.3s ease-in-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none !important;  /* Removes underline */
+        gap: 5px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dog-btn::before {
+        content: "🐾"; /* Paw Print Emoji */
+        font-size: 18px; /* Smaller paw */
+        position: relative;
+        left: 0;
+        top: 0;
+        transition: 0.3s ease-in-out;
+    }
+    
+    .dog-btn:hover {
+        background: linear-gradient(45deg, #ff5e62, #ff914d); /* Reverse gradient on hover */
+        transform: translateY(-2px); /* Less movement */
+        box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dog-btn:active {
+        transform: translateY(1px);
+    }
+    
+    /* Slight Paw Bounce */
+    @keyframes softBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+    }
+    
+    .dog-btn:hover::before {
+        animation: softBounce 0.4s infinite;
+    }
+    a {
+        text-decoration: none !important; /* Removes underline */
+    }
+    
+    
+</style>
+<body>
+    
+    <div class="container mt-5"> 
+        <div class="row">
+            {% for x in data %}
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+                <div class="card">
+                    <img src="{{ x.dog_image.url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ x.dog_name }}</h5>
+                        <p>Breed:{{ x.breed }}</p>
+                        <a href="/moreDetails/{{ x.id }}">
+                            <center><button class="dog-btn">View Details</button></center>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

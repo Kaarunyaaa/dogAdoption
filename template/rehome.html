@@ -1,0 +1,93 @@
+{% extends 'mainBase.html' %}
+{% load static %}
+
+{% block title %}Rehome Your Dog{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="card shadow p-4">
+        <h2 class="text-center text-danger fw-bold">🐾 Rehome Your Dog 🐾</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Dog’s Information -->
+            <h4 class="mt-4 text-secondary fw-bold">🐶 Dog’s Information</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="dogName" class="form-label">Dog's Name</label>
+                        <input type="text" class="form-control" id="dogName" name="dog_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="breed" class="form-label">Breed</label>
+                        <input type="text" class="form-control" id="breed" name="breed" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age </label>
+                        <input type="text" class="form-control" id="age" name="age" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <select class="form-select" id="gender" name="gender">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health & Behavior Sections Side by Side -->
+            <div class="row">
+                <!-- Health & Medical -->
+                <div class="col-md-6">
+                    <h4 class="mt-4 text-secondary fw-bold">🩺 Health & Medical</h4>
+                    <div class="mb-3">
+                        <label for="vaccinated" class="form-label">Vaccinated?</label>
+                        <select class="form-select" id="vaccinated" name="vaccinated">
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+    
+                </div>
+
+                <!-- Behavior & Compatibility -->
+                <div class="col-md-6">
+                    <h4 class="mt-4 text-secondary fw-bold">🐕 Behavior & Compatibility</h4>
+                    <div class="mb-3">
+                        <label for="training" class="form-label">House-Trained?</label>
+                        <select class="form-select" id="training" name="training">
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Rehoming Details -->
+            <h4 class="mt-4 text-secondary fw-bold">📜 Rehoming Details</h4>
+            <div class="mb-3">
+                <label for="reason" class="form-label">Reason for Rehoming</label>
+                <textarea class="form-control" id="reason" name="reason" rows="3" required></textarea>
+            </div>
+
+            <!-- Upload Photos -->
+            <h4 class="mt-4 text-secondary fw-bold">📸 Upload Photos</h4>
+            <div class="mb-3">
+                <label for="dogImage" class="form-label">Upload Images</label>
+                <input type="file" class="form-control" id="dogImage" name="dog_images" multiple required>
+                
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-danger btn-lg w-100">Submit Form 🐶</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Approve Rehome Requests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #ff914d;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .dog-card {
+            display: flex;
+            align-items: center;
+            background: #fff7e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .dog-card:hover {
+            transform: scale(1.02);
+        }
+        .dog-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 3px solid #ff914d;
+        }
+        .approve-btn {
+            background: #ff914d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .approve-btn:hover {
+            background: #ff7b2b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🐾 Admin - Approve Rehome Requests 🐾</h1>
+
+        {% if unverified_dogs %}
+            {% for dog in unverified_dogs %}
+            <div class="dog-card">
+                <img src="{{ dog.dog_image.url }}" alt="Dog Image" onerror="this.src='https://via.placeholder.com/80?text=🐶'">
+                <div class="dog-details">
+                    <h5>{{ dog.dog_name }}</h5>
+                    <p><strong>Breed:</strong> {{ dog.breed }}</p>
+                    <p><strong>Age:</strong> {{ dog.age }} years</p>
+                    <p><strong>Owner:</strong> {{ dog.owner.username }}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="dog_id" value="{{ dog.id }}">
+                        <button type="submit" class="approve-btn">Approve ✅</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center text-muted">No unverified requests at the moment. 🐕</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

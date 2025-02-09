@@ -1,0 +1,75 @@
+{% extends 'mainBase.html' %}
+{% load static %}
+
+{% block title %}View Dog Details{% endblock %}
+
+{% block content %}
+<style>
+    .request-card {
+        max-width: 500px;  /* Limit the card width */
+        margin: 0 auto;    /* Center the card */
+        padding: 15px;
+        border-radius: 10px;
+        background: #ffffff;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .request-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #ddd;
+    }
+
+    .icon-btn {
+        font-size: 22px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .icon-btn:hover {
+        transform: scale(1.1);
+    }
+</style>
+
+<div class="container mt-4">
+    <h4 class="text-center mb-4 text-primary">Adoption Requests</h4>
+
+    <div class="d-flex flex-wrap justify-content-center">
+        {% for request in requests %}
+        <div class="request-card shadow-sm border-0 rounded-3 mb-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <!-- Adopter's Profile -->
+                <div class="d-flex align-items-center">
+                    <img src="{{ request.adopter.userprofile.profile_picture.url }}" alt="Profile Picture" class="profile-img">
+                    
+                    <div class="ms-3">
+                        <h6 class="mb-0 fw-bold text-primary">{{ request.adopter.username }}</h6>
+                        <p class="mb-0 text-muted small"><strong>Dog:</strong> {{ request.dog.dog_name }}</p>
+                    </div>
+                </div>
+
+                <!-- Action Icons -->
+                <form action="{% url 'update_adoption_status' request.id %}" method="POST" class="d-flex align-items-center">
+                    {% csrf_token %}
+                    <button type="submit" name="status" value="Accepted" class="icon-btn text-success mx-2" title="Accept">
+                        ✅
+                    </button>
+                    <button type="submit" name="status" value="Rejected" class="icon-btn text-danger" title="Reject">
+                        ❌
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Dog Adoption & Sell</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Dog-Themed Background */
+        body {
+            background: url('https://cdn.pixabay.com/photo/2017/09/25/13/12/dog-2785074_1280.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Glassmorphic Effect */
+        .glass-box {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            color: #fff;
+        }
+
+        /* Input Styling */
+        .input-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: none;
+            border-bottom: 2px solid white;
+            background-color: transparent;
+            color: #fff;
+            border-radius: 8px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .input-container input:focus {
+            border-bottom: 2px solid #ff9800;
+        }
+
+        .input-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff9800;
+        }
+
+        /* Two-Column Layout */
+        .row .col {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+
+        /* Button Styling */
+        .glass-box button {
+            background-color: #ff9800;
+            color: white;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .glass-box button:hover {
+            background-color: #e68900;
+        }
+
+        .glass-box a {
+            color: #ff9800;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        ::placeholder {
+            color: rgb(185, 181, 181);
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-box">
+        <h3>Sign Up</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {% if messages %}
+                {% for message in messages %}
+                {% if 'error' in message.tags %}
+                <p style="color: red;">{{ message }}</p>
+            {% elif 'success' in message.tags %}
+                <p style="color: green;">{{ message }}</p>
+            {% else %}
+                <p style="color: white;">{{ message }}</p>
+            {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <!-- Username and Full Name Side by Side -->
+            <div class="row">
+                <div class="col">
+                    <div class="input-container">
+                        <i class="fa fa-user"></i>
+                        <input type="text" placeholder="Username" name="uname" autocomplete="new-password" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-container">
+                        <i class="fa fa-user"></i>
+                        <input type="text" placeholder="Full Name" name="owner_name" autocomplete="new-password" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password and Re-enter Password Side by Side -->
+            <div class="row">
+                <div class="col">
+                    <div class="input-container">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" placeholder="Password" name="pwd" autocomplete="new-password" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-container">
+                        <i class="fa fa-lock"></i>
+                        <input type="password" placeholder="Re-enter Password" name="repwd" autocomplete="new-password" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Number and Email Side by Side -->
+            <div class="row">
+                <div class="col">
+                    <div class="input-container">
+                        <i class="fa fa-phone"></i>
+                        <input type="number" placeholder="Phone Number" name="contact" autocomplete="new-password" required>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-container">
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" placeholder="Email" name="email" autocomplete="new-password" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Sign Up</button>
+            <a href="/login">Already have an account? Login</a>
+        </form>
+    </div>
+    <script src="https://kit.fontawesome.com/1cf1ca806e.js" crossorigin="anonymous"></script>
+</body>
+</html>

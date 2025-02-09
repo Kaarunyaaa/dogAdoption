@@ -1,0 +1,59 @@
+{% extends 'mainBase.html' %}
+{% load static %}
+
+{% block title %}View Dog Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card p-4 shadow-lg border-0 rounded-3">
+                <div class="row">
+                    <!-- Dog Image -->
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <img src="{{ dog.dog_image.url }}" alt="{{ dog.dog_name }}" class="img-fluid rounded shadow-sm">
+                    </div>
+
+                    <!-- Dog Details -->
+                    <div class="col-md-6">
+                        <h2 class="text-center text-primary mb-3">{{ dog.dog_name }}</h2>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Breed:</strong> {{ dog.breed }}</li>
+                            <li class="list-group-item"><strong>Age:</strong> {{ dog.age }} years</li>
+                            <li class="list-group-item"><strong>Gender:</strong> {{ dog.gender }}</li>
+                            <li class="list-group-item">
+                                <strong>Vaccinated:</strong>
+                                <span class="badge {% if dog.vaccinated %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if dog.vaccinated %} Yes {% else %} No {% endif %}
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Training:</strong>
+                                <span class="badge {% if dog.training %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if dog.training %} Yes {% else %} No {% endif %}
+                                </span>
+                            </li>
+                            <li class="list-group-item"><strong>Reason for Rehoming:</strong> {{ dog.reason }}</li>
+                        </ul>
+                        <br>
+                        <!-- Updated Adopt Button Link -->
+                        <center>
+                            <a href="{% url 'adopt_dog' dog.id %}" class="btn btn-success">Adopt</a>
+                        </center>
+                        <br>
+                        {% if messages %}
+                    {% for message in messages %}
+        
+                        <center><p style="color: red;">{{ message }}</p></center>
+            
+        
+                    {% endfor %}
+                    {% endif %}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

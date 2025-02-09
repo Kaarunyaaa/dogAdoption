@@ -1,0 +1,162 @@
+{% extends 'mainBase.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Background Image -->
+<!-- Hero Section -->
+<div class="position-relative text-white text-center" style="background: url('{% static 'images/hero-bg.jpg' %}') no-repeat center center/cover; height: 450px;">
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.6);"></div>
+    <div class="container position-relative d-flex flex-column justify-content-center align-items-center h-100">
+        <h1 class="display-4 fw-bold">Find a Forever Friend</h1>
+        <p class="lead">Adopt, don't shop. Give a loving home to a dog in need.</p>
+        <a href="/availabledogs" class="btn btn-lg btn-success px-4 py-2 mt-3" style="transition: transform 0.3s ease-in-out;">
+            Browse Available Dogs
+        </a>
+    </div>
+</div>
+
+
+<!-- Why Adopt Section with Cards -->
+<div class="container py-5">
+    <h2 class="text-center fw-bold">Why Adopt?</h2>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <i class="fas fa-heart fa-3x text-danger mb-3"></i>
+                <h4>Save a Life</h4>
+                <p>Adopting a pet gives them a second chance at life and brings happiness to your home.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <i class="fas fa-paw fa-3x text-warning mb-3"></i>
+                <h4>Find Your Best Friend</h4>
+                <p>Adopt a loyal companion who will love you unconditionally for years to come.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <i class="fas fa-hand-holding-heart fa-3x text-success mb-3"></i>
+                <h4>Support Animal Welfare</h4>
+                <p>Your adoption helps reduce the number of homeless pets in need of love and care.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works - Adoption Steps -->
+<div class="container py-5">
+    <h2 class="text-center fw-bold">How Adoption Works</h2>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10">
+            <div class="step-container d-flex flex-wrap">
+                <div class="step text-center">
+                    <div class="circle bg-primary text-white">1</div>
+                    <h5>Browse Available Pets</h5>
+                    <p>Find your perfect furry friend in our listings.</p>
+                </div>
+                <div class="step text-center">
+                    <div class="circle bg-primary text-white">2</div>
+                    <h5>Submit Adoption Request</h5>
+                    <p>Apply to adopt and provide necessary details.</p>
+                </div>
+                <div class="step text-center">
+                    <div class="circle bg-primary text-white">3</div>
+                    <h5>Meet Your New Best Friend</h5>
+                    <p>After approval, bring your pet home.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Why Rehome Section with Cards -->
+<div class="container py-5">
+    <h2 class="text-center fw-bold">Why Rehome?</h2>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <i class="fas fa-home fa-3x text-primary mb-3"></i>
+                <h4>Give a Second Chance</h4>
+                <p>Rehoming allows you to give a loving family a chance to take care of your pet.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <i class="fas fa-user-friends fa-3x text-danger mb-3"></i>
+                <h4>Ease Your Pet's Transition</h4>
+                <p>Help your pet find a new home with ease and comfort.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 p-4">
+                <i class="fas fa-hands-helping fa-3x text-success mb-3"></i>
+                <h4>Help a Pet in Need</h4>
+                <p>Your pet may bring joy to a family that can better meet its needs.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How Rehoming Works -->
+<div class="container py-5">
+    <h2 class="text-center fw-bold">How Rehoming Works</h2>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-10">
+            <div class="step-container d-flex flex-wrap">
+                <div class="step text-center">
+                    <div class="circle bg-warning text-white">1</div>
+                    <h5>Fill Out the Rehome Form</h5>
+                    <p>Submit the details of your pet.</p>
+                    <a href="/rehome" class="btn btn-warning mt-2">Rehome Your Pet</a>
+                </div>
+                <div class="step text-center">
+                    <div class="circle bg-warning text-white">2</div>
+                    <h5>Review Adoption Requests</h5>
+                    <p>Go through potential adopters.</p>
+                </div>
+                <div class="step text-center">
+                    <div class="circle bg-warning text-white">3</div>
+                    <h5>Accept or Reject Requests</h5>
+                    <p>Choose the best home for your pet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .card {
+        transition: transform 0.3s ease-in-out;
+    }
+    .card:hover {
+        transform: translateY(-10px);
+    }
+    .step-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    .step {
+        flex: 1;
+        max-width: 250px;
+        text-align: center;
+    }
+    .circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+
+{% endblock %}
