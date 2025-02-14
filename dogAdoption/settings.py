@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-vtp3!fa%a1a8jil$f^i2b*j4&#uiy_uzlpd36lb!(k&!owbcia
 DEBUG = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["furever-home-uptb.onrender.com","www.furever-home-uptb.onrender.com","localhost","127.0.0.1"]
 
 
 # Application definition
