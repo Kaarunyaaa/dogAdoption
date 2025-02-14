@@ -39,6 +39,7 @@ urlpatterns = [
     path("update_adoption_status/<int:id>/", views.update_adoption_status, name="update_adoption_status"),
     path('profile/<int:id>/', views.profile, name='profile'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
+    path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:

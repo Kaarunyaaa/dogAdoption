@@ -11,7 +11,8 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(max_length=10, choices=USER_TYPES, default='user')
     phNo = models.CharField(max_length=15, null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True) 
-
+    is_verified = models.BooleanField(default=False)
+    
     def save(self, *args, **kwargs):
         if self.user_type == 'admin':
             self.is_staff = True  # Admin users should have staff privileges

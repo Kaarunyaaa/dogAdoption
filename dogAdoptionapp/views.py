@@ -1,48 +1,46 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Dog,CustomUser,AdoptionRequest
+from .models import Dog, CustomUser, AdoptionRequest
 from django.urls import reverse
+from django.http import HttpResponse
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+import six
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.conf import settings
 
-
-# Create your views here.
 def index(request):
-    return render(request,'index.html')
-
+    return render(request, 'index.html')
 
 def logout_view(request):
     logout(request)
     return redirect('/')
 
-
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('uname')
         password1 = request.POST.get('pwd')
-        
         user = authenticate(request, username=username, password=password1)
+        
         if user is not None:
-            data = CustomUser.objects.get(username = username)
+            data = CustomUser.objects.get(username=username)
+            if not data.is_verified:
+                messages.error(request, "Please verify your email before logging in.")
+                return redirect('/login')
+            
             login(request, user)
-            if data.user_type == 'admin':
-                return redirect('/adminn') 
-            else:
-                return redirect('/home') 
+            return redirect('/adminn' if data.user_type == 'admin' else '/home')
         else:
             messages.error(request, 'Invalid username or password')
     return render(request, "login.html")
 
-from django.http import HttpResponseForbidden
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-
 @login_required
 def adminn(request):
-    if request.user.username != "adminuser":  # Change to actual admin username
+    if request.user.username != "kaarunya":  
         return HttpResponse("""
             <html>
             <head>
@@ -90,13 +88,26 @@ def adminn(request):
 
     return render(request, 'adminn.html', {'unverified_dogs': unverified_dogs})
 
+class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return six.text_type(user.pk) + six.text_type(timestamp) + six.text_type(user.is_verified)
+
+email_verification_token = EmailVerificationTokenGenerator()
+
+def send_verification_email(user, request):
+    token = email_verification_token.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    verification_link = request.build_absolute_uri(reverse('verify_email', kwargs={'uidb64': uid, 'token': token}))
+    subject = "Verify your Email"
+    message = f"Click the link to verify your email: {verification_link}"
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
 
 def signup(request):
     if request.method == 'POST':
         uname1 = request.POST.get('uname')
         pwd1 = request.POST.get('pwd')
         repwd1 = request.POST.get('repwd')
-        contact = request.POST.get('contact')  # phNo
+        contact = request.POST.get('contact')
         email = request.POST.get('email')
         
         if pwd1 != repwd1:
@@ -107,16 +118,28 @@ def signup(request):
             messages.error(request, 'Username is already taken')
             return redirect('/signup')
         
-        if pwd1 and repwd1:
-            # Create the CustomUser object with phone number (phNo)
-            user = CustomUser.objects.create_user(username=uname1, password=pwd1, email=email, phNo=contact, user_type='user')
-            user.save()
-            
-            messages.success(request, "Registration successful!")
-            messages.success(request, "Login here.")
-            return redirect('/login')
-            
+        user = CustomUser.objects.create_user(username=uname1, password=pwd1, email=email, phNo=contact, user_type='user', is_verified=False)
+        user.save()
+        send_verification_email(user, request)
+        messages.success(request, "Registration successful! Check your email for verification.")
+        return redirect('/login')
     return render(request, 'signup.html')
+
+def verify_email(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    
+    if user is not None and email_verification_token.check_token(user, token):
+        user.is_verified = True
+        user.save()
+        messages.success(request, "Email verified successfully! You can now log in.")
+        return redirect('/login')
+    else:
+        messages.error(request, "Invalid verification link.")
+        return redirect('/signup')
 
 @login_required
 def home(request):
