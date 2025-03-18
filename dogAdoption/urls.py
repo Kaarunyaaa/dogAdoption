@@ -40,6 +40,8 @@ urlpatterns = [
     path('profile/<int:id>/', views.profile, name='profile'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
+    path('chat/<int:adoption_request_id>/', views.chat_room, name='chat_room'),
+    path('chats/', views.chat_list, name='chat_list'),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 if settings.DEBUG:

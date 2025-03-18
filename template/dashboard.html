@@ -11,30 +11,60 @@
     {% if my_adoption_requests %}
         <div class="list-group mb-4">
             {% for request in my_adoption_requests %}
-                <div class="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded">
-                    <div>
-                        <strong>Dog:</strong> {{ request.dog.dog_name }} <br>
-                        <strong>Status:</strong> 
-                        <span class="badge 
-                            {% if request.status == 'Accepted' %}bg-success{% elif request.status == 'Rejected' %}bg-danger{% else %}bg-warning{% endif %}">
-                            {{ request.status }}
-                        </span>
+                {% if forloop.counter <= 3 %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded">
+                        <div>
+                            <strong>Dog:</strong> {{ request.dog.dog_name }} <br>
+                            <strong>Status:</strong> 
+                            <span class="badge 
+                                {% if request.status == 'Accepted' %}bg-success{% elif request.status == 'Rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                                {{ request.status }}
+                            </span>
+                        </div>
                     </div>
-                </div>
+                {% elif forloop.counter == 4 %}
+                    <!-- Hidden requests container starts here -->
+                    <div id="hidden-requests" style="display: none;">
+                        <div class="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded">
+                            <div>
+                                <strong>Dog:</strong> {{ request.dog.dog_name }} <br>
+                                <strong>Status:</strong> 
+                                <span class="badge 
+                                    {% if request.status == 'Accepted' %}bg-success{% elif request.status == 'Rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                                    {{ request.status }}
+                                </span>
+                            </div>
+                        </div>
+                {% else %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded">
+                            <div>
+                                <strong>Dog:</strong> {{ request.dog.dog_name }} <br>
+                                <strong>Status:</strong> 
+                                <span class="badge 
+                                    {% if request.status == 'Accepted' %}bg-success{% elif request.status == 'Rejected' %}bg-danger{% else %}bg-warning{% endif %}">
+                                    {{ request.status }}
+                                </span>
+                            </div>
+                        </div>
+                {% endif %}
             {% endfor %}
+            {% if my_adoption_requests|length > 3 %}
+                    </div> <!-- End of hidden requests container -->
+
+                    <button id="toggle-button" class="btn btn-outline-primary mt-2 w-100">Show More</button>
+            {% endif %}
         </div>
     {% else %}
         <p class="text-muted">You have not requested to adopt any dogs yet.</p>
     {% endif %}
 
-    <!-- Section 2: Requests for My Dogs -->
+    <!-- Section 2: Requests for My Dogs (No changes here) -->
     <h4 class="text-primary mb-3">Adoption Requests for My Dogs</h4>
     {% if received_requests %}
         <div class="list-group">
             {% for request in received_requests %}
                 <div class="list-group-item d-flex justify-content-between align-items-center shadow-sm rounded">
                     <div class="d-flex align-items-center">
-                        <!-- Adopter's Profile Picture -->
                         {% if request.adopter.userprofile.profile_picture %}
                             <img src="{{ request.adopter.userprofile.profile_picture.url }}" 
                                  alt="Profile Picture" 
@@ -50,16 +80,10 @@
                             <strong>{{ request.adopter.username }}</strong> wants to adopt <strong>{{ request.dog.dog_name }}</strong>
                         </div>
                     </div>
-
-                    <!-- Action Buttons -->
                     <form action="{% url 'update_adoption_status' request.id %}" method="POST" class="d-flex">
                         {% csrf_token %}
-                        <button type="submit" name="status" value="Accepted" class="btn btn-link text-success fs-5 mx-2" title="Accept">
-                            ✅
-                        </button>
-                        <button type="submit" name="status" value="Rejected" class="btn btn-link text-danger fs-5" title="Reject">
-                            ❌
-                        </button>
+                        <button type="submit" name="status" value="Accepted" class="btn btn-link text-success fs-5 mx-2" title="Accept">✅</button>
+                        <button type="submit" name="status" value="Rejected" class="btn btn-link text-danger fs-5" title="Reject">❌</button>
                     </form>
                 </div>
             {% endfor %}
@@ -69,4 +93,24 @@
     {% endif %}
 
 </div>
+
+<!-- JavaScript for toggling -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const hiddenRequests = document.getElementById('hidden-requests');
+        const toggleButton = document.getElementById('toggle-button');
+
+        if (toggleButton) {
+            toggleButton.addEventListener('click', function () {
+                if (hiddenRequests.style.display === 'none') {
+                    hiddenRequests.style.display = 'block';
+                    toggleButton.textContent = 'Show Less';
+                } else {
+                    hiddenRequests.style.display = 'none';
+                    toggleButton.textContent = 'Show More';
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

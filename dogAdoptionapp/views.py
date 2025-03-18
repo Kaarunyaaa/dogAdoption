@@ -143,6 +143,7 @@ def verify_email(request, uidb64, token):
 
 @login_required
 def home(request):
+    
     return render(request,'home.html')
 
 @login_required
@@ -231,20 +232,37 @@ def adopt_dog(request, id):
 
 @login_required
 def dashboard(request):
-    # Fetch requests where the logged-in user is the adopter (requests they made)
+    # Fetch adoption requests the user made
     my_adoption_requests = AdoptionRequest.objects.filter(adopter=request.user).select_related("dog")
 
-    # Fetch requests where the logged-in user is the owner (requests they received)
+    # Fetch adoption requests the user received (pending ones)
     received_requests = AdoptionRequest.objects.filter(owner=request.user, status="Pending").select_related("adopter", "dog")
+
+    # Mark all unseen requests as seen when user visits dashboard
+    AdoptionRequest.objects.filter(owner=request.user, status="Pending", seen=False).update(seen=True)
 
     return render(request, "dashboard.html", {
         "my_adoption_requests": my_adoption_requests,
-        "received_requests": received_requests
+        "received_requests": received_requests,
     })
 
 
 
+# def update_adoption_status(request, id):
+#     adoption_request = get_object_or_404(AdoptionRequest, id=id, owner=request.user)
 
+#     if request.method == "POST":
+#         status = request.POST.get("status")
+#         if status in ["Accepted", "Rejected"]:
+#             adoption_request.status = status
+#             adoption_request.save()
+
+#             # ✅ If accepted, mark the dog as rehomed
+#             if status == "Accepted":
+#                 adoption_request.dog.is_rehomed = True
+#                 adoption_request.dog.save()
+
+#     return redirect("/dashboard")
 @login_required
 def update_adoption_status(request, id):
     adoption_request = get_object_or_404(AdoptionRequest, id=id, owner=request.user)
@@ -255,12 +273,16 @@ def update_adoption_status(request, id):
             adoption_request.status = status
             adoption_request.save()
 
-            # ✅ If accepted, mark the dog as rehomed
+            # ✅ If accepted, mark the dog as rehomed and create a chat room
             if status == "Accepted":
                 adoption_request.dog.is_rehomed = True
                 adoption_request.dog.save()
 
+                # 🚀 Create chat room if it doesn’t exist
+                ChatRoom.objects.get_or_create(adoption_request=adoption_request)
+
     return redirect("/dashboard")
+
 
 @login_required
 def profile(request, id):
@@ -287,3 +309,62 @@ def edit_profile(request):
         return redirect(reverse("profile", kwargs={"id": user.id}))
 
     return render(request, "edit_profile.html", {"user": user})
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import AdoptionRequest, ChatRoom, Message
+
+@login_required
+def chat_room(request, adoption_request_id):
+    adoption_request = get_object_or_404(AdoptionRequest, id=adoption_request_id)
+
+    if request.user not in [adoption_request.adopter, adoption_request.owner]:
+        return redirect('home')
+
+    room, created = ChatRoom.objects.get_or_create(adoption_request=adoption_request)
+
+    # ✅ Mark unread messages (received by the user) as read when the chat is opened
+    Message.objects.filter(room=room, recipient=request.user, is_read=False).update(is_read=True)
+
+    if request.method == 'POST':
+        content = request.POST.get('message')
+        if content:
+            recipient = adoption_request.owner if request.user == adoption_request.adopter else adoption_request.adopter
+            Message.objects.create(room=room, sender=request.user, recipient=recipient, content=content)
+
+    messages = room.messages.order_by('timestamp')
+    return render(request, 'chat/chat_room.html', {'room': room, 'messages': messages})
+
+@login_required
+def chat_list(request):
+    adoption_requests = AdoptionRequest.objects.filter(
+        adopter=request.user
+    ) | AdoptionRequest.objects.filter(
+        owner=request.user
+    )
+
+    chats = ChatRoom.objects.filter(adoption_request__in=adoption_requests).prefetch_related('messages', 'adoption_request__dog')
+
+    # 📝 Add an attribute for unread message count
+    for chat in chats:
+        chat.unread_count = chat.messages.filter(recipient=request.user, is_read=False).count()
+
+    return render(request, 'chat/chat_list.html', {'chats': chats})
+
+
+
+def accept_request(request, request_id):
+    adoption_request = get_object_or_404(AdoptionRequest, id=request_id)
+
+    # Accept the request
+    adoption_request.status = "Accepted"
+    adoption_request.save()
+
+    # ✅ Create a ChatRoom if it doesn’t exist
+    ChatRoom.objects.get_or_create(adoption_request=adoption_request)
+
+    return redirect('dashboard')
+
+

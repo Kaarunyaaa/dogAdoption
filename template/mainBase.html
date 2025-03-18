@@ -21,7 +21,7 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow ">
     <div class="container">
         <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center" href="/">
@@ -47,10 +47,27 @@
                     <a class="nav-link" href="/logout">Logout</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/dashboard">
+                    <a class="nav-link position-relative" href="/dashboard">
                         <i class="fa-solid fa-bell"></i>
+                        {% if pending_requests_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ pending_requests_count }}
+                            </span>
+                        {% endif %}
                     </a>
                 </li>
+                <li class="nav-item position-relative">
+                    <a class="nav-link" href="/chats">
+                        <i class="fas fa-comment"></i>
+                        {% if new_message_count > 0 %}
+                            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill">
+                                {{ new_message_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+                </li>
+                
+                
             </ul>
 
             <!-- Search Bar -->

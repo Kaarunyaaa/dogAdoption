@@ -1,0 +1,51 @@
+{% extends 'mainBase.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <center><h4 class="mb-4">Your Chats</h4></center>
+    <ul class="list-group">
+        {% for chat in chats %}
+            <a href="{% url 'chat_room' chat.adoption_request.id %}" class="text-decoration-none text-dark">
+                <li class="list-group-item d-flex align-items-center justify-content-between py-3 hover-bg position-relative">
+                    
+                    <!-- 🐶 Dog Picture -->
+                    <img src="{{ chat.adoption_request.dog.dog_image.url }}" 
+                         alt="{{ chat.adoption_request.dog.dog_name }}" 
+                         class="rounded-circle me-3" 
+                         style="width: 55px; height: 55px; object-fit: cover;">
+    
+                    <!-- 📝 Chat Info -->
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <strong class="fs-6">{{ chat.adoption_request.dog.dog_name }}</strong>
+                            <small class="text-muted">{{ chat.last_message.timestamp|date:"H:i" }}</small>
+                        </div>
+                        <div class="text-muted small">
+                            {% if chat.last_message %}
+                                {{ chat.last_message.content|truncatechars:35 }}
+                            {% endif %}
+                        </div>
+                    </div>
+    
+                    <!-- 🔴 Red Dot for Unread Messages -->
+                    {% if chat.unread_count > 0 %}
+                        <span class="position-absolute top-3 end-0 translate-middle p-2 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">Unread messages</span>
+                        </span>
+                    {% endif %}
+                </li>
+            </a>
+        {% empty %}
+            <li class="list-group-item text-center">No chats available.</li>
+        {% endfor %}
+    </ul>
+    
+</div>
+
+<style>
+    .hover-bg:hover {
+        background-color: #f0f2f5;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
